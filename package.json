@@ -1,0 +1,23 @@
+{
+  "name": "shopping-cart",
+  "version": "1.0.0",
+  "description": "Shopping Cart Management Web Application - Full Stack Development Node.js Lab Examination",
+  "main": "expressApp.js",
+  "type": "module",
+  "scripts": {
+    "start:http": "node httpServer.js",
+    "start:express": "node expressApp.js"
+  },
+  "keywords": [
+    "nodejs",
+    "http",
+    "express",
+    "fs",
+    "shopping-cart"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
