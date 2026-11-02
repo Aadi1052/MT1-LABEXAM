@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shopping Cart Management Web Application</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --success: #16a34a;
+      --code-bg: #f1f5f9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 2.5rem 1.25rem;
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+      color: #ffffff;
+      padding: 2.5rem 2rem;
+      border-radius: 12px;
+      margin-bottom: 2rem;
+      box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.25);
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1.15rem;
+      opacity: 0.95;
+    }
+
+    .badge-pill {
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.22);
+      margin-top: 1rem;
+      letter-spacing: 0.02em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+    .card h2 {
+      font-size: 1.35rem;
+      color: var(--text-main);
+      margin-bottom: 0.75rem;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0.5rem;
+    }
+
+    .card p.subtitle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .endpoint-list {
+      list-style: none;
+    }
+
+    .endpoint-item {
+      padding: 0.65rem 0;
+      border-bottom: 1px dashed var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.92rem;
+    }
+
+    .endpoint-item:last-child {
+      border-bottom: none;
+    }
+
+    .method {
+      display: inline-block;
+      font-weight: 700;
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-right: 0.5rem;
+    }
+
+    .method.get { background: #dbeafe; color: #1e40af; }
+    .method.post { background: #dcfce7; color: #166534; }
+    .method.put { background: #fef3c7; color: #92400e; }
+    .method.delete { background: #fee2e2; color: #991b1b; }
+
+    a.route-link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.15s ease-in-out;
+    }
+
+    a.route-link:hover {
+      text-decoration: underline;
+      color: var(--primary-hover);
+    }
+
+    .cart-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.75rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      margin-bottom: 2rem;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.25rem;
+    }
+
+    button.btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s ease-in-out;
+    }
+
+    button.btn:hover {
+      background: var(--primary-hover);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 0.75rem 1rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #f8fafc;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+    }
+
+    tr:hover {
+      background: #f8fafc;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      margin-top: 2rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>🛒 Shopping Cart Management</h1>
+      <p>Welcome to our Shopping Cart Application!</p>
+      <span class="badge-pill">✅ Served using Node.js FS Module (/home)</span>
+    </header>
+
+    <div class="grid">
+      <!-- Part A Server -->
+      <div class="card">
+        <h2>Part A: Node.js HTTP Server</h2>
+        <p class="subtitle">Running on <strong>http://localhost:3000</strong> using native <code>http</code> & <code>fs</code></p>
+        <ul class="endpoint-list">
+          <li class="endpoint-item">
+            <div>
+              <span class="method get">GET</span>
+              <a class="route-link" href="/" target="_blank">/</a>
+            </div>
+            <span>HTML Welcome Page</span>
+          </li>
+          <li class="endpoint-item">
+            <div>
+              <span class="method get">GET</span>
+              <a class="route-link" href="/cart" target="_blank">/cart</a>
+            </div>
+            <span>Shopping Cart (JSON)</span>
+          </li>
+          <li class="endpoint-item">
+            <div>
+              <span class="method get">GET</span>
+              <a class="route-link" href="/about" target="_blank">/about</a>
+            </div>
+            <span>About Application</span>
+          </li>
+          <li class="endpoint-item">
+            <div>
+              <span class="method get">GET</span>
+              <a class="route-link" href="/home">/home</a>
+            </div>
+            <span>Static HTML (FS Module)</span>
+          </li>
+          <li class="endpoint-item">
+            <div>
+              <span class="method post">POST</span>
+              <code>/add-to-cart</code>
+            </div>
+            <span>Add Item (JSON)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Part B Server -->
+      <div class="card">
+        <h2>Part B: Express.js REST API</h2>
+        <p class="subtitle">Running on <strong>http://localhost:4000</strong> with CRUD operations</p>
+        <ul class="endpoint-list">
+          <li class="endpoint-item">
+            <div>
+              <span class="method get">GET</span>
+              <a class="route-link" href="http://localhost:4000/cart" target="_blank">/cart</a>
+            </div>
+            <span>Retrieve all items</span>
+          </li>
+          <li class="endpoint-item">
+            <div>
+              <span class="method get">GET</span>
+              <a class="route-link" href="http://localhost:4000/cart/1" target="_blank">/cart/:id</a>
+            </div>
+            <span>Retrieve item by ID</span>
+          </li>
+          <li class="endpoint-item">
+            <div>
+              <span class="method post">POST</span>
+              <code>/cart</code>
+            </div>
+            <span>Add new product (201)</span>
+          </li>
+          <li class="endpoint-item">
+            <div>
+              <span class="method put">PUT</span>
+              <code>/cart/:id</code>
+            </div>
+            <span>Update product</span>
+          </li>
+          <li class="endpoint-item">
+            <div>
+              <span class="method delete">DELETE</span>
+              <code>/cart/:id</code>
+            </div>
+            <span>Remove product</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Live Cart Viewer -->
+    <div class="cart-section">
+      <div class="cart-header">
+        <h2>🛍️ Live Cart Items</h2>
+        <button class="btn" onclick="fetchCartItems()">Refresh Cart</button>
+      </div>
+      <div id="loading" style="display:none; color: var(--text-muted); padding: 0.5rem 0;">Loading cart items...</div>
+      <div style="overflow-x: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Price (₹)</th>
+              <th>Quantity</th>
+              <th>Total (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="cart-tbody">
+            <!-- Dynamically populated -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <footer>
+      <p>Full Stack Development – Node.js Lab Examination (MT1) &bull; Technology: Node.js, HTTP Module, FS Module, Express.js</p>
+    </footer>
+  </div>
+
+  <script>
+    async function fetchCartItems() {
+      const tbody = document.getElementById('cart-tbody');
+      const loading = document.getElementById('loading');
+      loading.style.display = 'block';
+
+      try {
+        const response = await fetch('/cart');
+        const items = await response.json();
+        tbody.innerHTML = '';
+
+        if (!Array.isArray(items) || items.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 1.5rem; color: #64748b;">No items in cart.</td></tr>';
+          return;
+        }
+
+        items.forEach(item => {
+          const row = document.createElement('tr');
+          const total = item.totalPrice !== undefined ? item.totalPrice : (item.price * item.quantity);
+          row.innerHTML = `
+            <td><strong>#${item.id}</strong></td>
+            <td>${item.productName}</td>
+            <td><span style="background: #e2e8f0; color: #334155; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">${item.category || 'General'}</span></td>
+            <td>₹${item.price}</td>
+            <td>${item.quantity}</td>
+            <td><strong>₹${total}</strong></td>
+          `;
+          tbody.appendChild(row);
+        });
+      } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center; padding: 1rem;">Failed to load items: ${err.message}</td></tr>`;
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchCartItems);
+  </script>
+</body>
+</html>
